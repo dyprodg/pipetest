@@ -43,7 +43,7 @@ resource "aws_codebuild_project" "build_and_test" {
   service_role  = aws_iam_role.codebuild_role.arn
 
   artifacts {
-    type = "NO_ARTIFACTS"
+    type = "CODEPIPELINE"
   }
 
   environment {
@@ -58,15 +58,15 @@ resource "aws_codebuild_project" "build_and_test" {
   }
 
   source {
-    type            = "GITHUB"
-    location        = "https://github.com/meinusername/mein-repo.git"
-    git_clone_depth = 1
+    type = "CODEPIPELINE"
+
   }
 }
 
 resource "aws_codepipeline" "meine_pipeline" {
   name     = "meine-app-pipeline"
   role_arn = aws_iam_role.codepipeline_role.arn
+  pipeline_type = "V2"
 
   artifact_store {
     location = aws_s3_bucket.codepipeline_bucket.bucket
@@ -76,18 +76,18 @@ resource "aws_codepipeline" "meine_pipeline" {
   stage {
     name = "Source"
     action {
-      name             = "GitHub_Source"
+      name             = "Source"
       category         = "Source"
-      owner            = "ThirdParty"
-      provider         = "GitHub"
+      owner            = "AWS"
+      provider         = "CodeStarSourceConnection"
       version          = "1"
       output_artifacts = ["source_output"]
 
       configuration = {
-        Owner      = "dyprodg"
-        Repo       = "pipetest"
-        Branch     = "main"
-        OAuthToken = var.GITHUB_TOKEN
+        ConnectionArn = var.codestar_connection_arn
+        FullRepositoryId = "dyprodg/pipetest"
+        BranchName = "main"
+        DetectChanges = "true"
       }
     }
   }
@@ -95,7 +95,7 @@ resource "aws_codepipeline" "meine_pipeline" {
   stage {
     name = "BuildAndTest"
     action {
-      name             = "BuildAndTestAction"
+      name             = "BuildAndTest"
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
@@ -103,7 +103,7 @@ resource "aws_codepipeline" "meine_pipeline" {
       output_artifacts = ["build_output"]
       version          = "1"
       configuration = {
-        ProjectName = aws_codebuild_project.build_and_test.name
+        ProjectName = "BuildTest"
       }
     }
   }
@@ -111,7 +111,7 @@ resource "aws_codepipeline" "meine_pipeline" {
   stage {
     name = "Approval"
     action {
-      name     = "ManualApproval"
+      name     = "Approval"
       category = "Approval"
       owner    = "AWS"
       provider = "Manual"
@@ -133,10 +133,12 @@ resource "aws_iam_policy" "codepipeline_codebuild_full_access" {
         Action = [
           "codebuild:*",
           "codepipeline:*",
+          "codestar-connections:UseConnection",
+          "logs:*",
         ],
         Resource = "*"
       },
-      {
+            {
         Effect = "Allow",
         Action = "s3:*",
         Resource = [
@@ -144,11 +146,6 @@ resource "aws_iam_policy" "codepipeline_codebuild_full_access" {
           "${aws_s3_bucket.codepipeline_bucket.arn}/*"
         ]
       },
-      {
-        Effect   = "Allow",
-        Action   = "logs:*",
-        Resource = "*"
-      }
     ]
   })
 }
