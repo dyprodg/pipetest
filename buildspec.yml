@@ -6,7 +6,6 @@ phases:
       python: 3.8  
     commands:
       - echo Installing dependencies...
-      - pip install -r requirements.txt
 
   pre_build:
     commands:
@@ -15,8 +14,11 @@ phases:
   build:
     commands:
       - echo Running tests...
-      - pytest
+
 
   post_build:
     commands:
       - echo Build completed on `date`
+
+artifacts:
+  - index.html

@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket = "mein-codepipeline-artefakt-bucket"
+  bucket = "httpd-pipeline-bucket-dennis"
 }
 
 resource "aws_iam_role" "codepipeline_role" {
@@ -64,8 +64,8 @@ resource "aws_codebuild_project" "build_and_test" {
 }
 
 resource "aws_codepipeline" "meine_pipeline" {
-  name     = "FlaskPipeline"
-  role_arn = aws_iam_role.codepipeline_role.arn
+  name          = "FlaskPipeline"
+  role_arn      = aws_iam_role.codepipeline_role.arn
   pipeline_type = "V2"
 
   artifact_store {
@@ -84,10 +84,10 @@ resource "aws_codepipeline" "meine_pipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        ConnectionArn = var.codestar_connection_arn
+        ConnectionArn    = var.codestar_connection_arn
         FullRepositoryId = "dyprodg/pipetest"
-        BranchName = "main"
-        DetectChanges = "true"
+        BranchName       = "httpd"
+        DetectChanges    = "true"
       }
     }
   }
@@ -138,7 +138,7 @@ resource "aws_iam_policy" "codepipeline_codebuild_full_access" {
         ],
         Resource = "*"
       },
-            {
+      {
         Effect = "Allow",
         Action = "s3:*",
         Resource = [
