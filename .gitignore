@@ -1,0 +1,22 @@
+# Terraform ignore rules
+**/.terraform/*
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+terraform.rc
+terraform.tfstate.d/
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+
+# Ignore all dot files
+.*
+
+# But not .gitignore or .gitattributes
+!.gitignore
+!.gitattributes
