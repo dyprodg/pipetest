@@ -1,5 +1,5 @@
 resource "aws_codedeploy_app" "example" {
-  name             = "example-codedeploy-app"
+  name             = "httpd-codedeploy-app"
   compute_platform = "Server"
 }
 

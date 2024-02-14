@@ -48,7 +48,7 @@ resource "aws_codebuild_project" "build_and_test" {
 
   environment {
     compute_type = "BUILD_GENERAL1_SMALL"
-    image        = "aws/codebuild/standard:4.0"
+    image        = "aws/codebuild/standard:6.0"
     type         = "LINUX_CONTAINER"
 
     environment_variable {
@@ -116,6 +116,22 @@ resource "aws_codepipeline" "meine_pipeline" {
       owner    = "AWS"
       provider = "Manual"
       version  = "1"
+    }
+  }
+
+  stage {
+    name = "Deploy"
+    action {
+      name            = "Deploy"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "CodeDeploy"
+      input_artifacts = ["build_output"]
+      version         = "1"
+      configuration = {
+        ApplicationName     = aws_codedeploy_app.example.name
+        DeploymentGroupName = aws_codedeploy_deployment_group.example.deployment_group_name
+      }
     }
   }
 }
