@@ -1,9 +1,6 @@
-
-
 resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket = "mein-codepipeline-artefakt-bucket"
 }
-
 
 resource "aws_iam_role" "codepipeline_role" {
   name = "codepipeline_role"
@@ -121,4 +118,37 @@ resource "aws_codepipeline" "meine_pipeline" {
       version   = "1"
     }
   }
+}
+
+# Umfassende IAM Policy für CodeBuild und CodePipeline
+resource "aws_iam_policy" "codepipeline_codebuild_full_access" {
+  name        = "codepipeline_codebuild_full_access"
+  description = "Gewährt volle Zugriffsrechte auf CodeBuild und CodePipeline"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "codebuild:*",
+          "codepipeline:*",
+          "s3:*",
+          "logs:*",
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Anhängen der umfassenden Policy an beide Rollen
+resource "aws_iam_role_policy_attachment" "codepipeline_full_access_attachment" {
+  role       = aws_iam_role.codepipeline_role.name
+  policy_arn = aws_iam_policy.codepipeline_codebuild_full_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "codebuild_full_access_attachment" {
+  role       = aws_iam_role.codebuild_role.name
+  policy_arn = aws_iam_policy.codepipeline_codebuild_full_access.arn
 }
