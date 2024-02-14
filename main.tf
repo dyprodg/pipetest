@@ -102,7 +102,7 @@ resource "aws_codepipeline" "meine_pipeline" {
       input_artifacts  = ["source_output"]
       output_artifacts = ["build_output"]
       version          = "1"
-      configuration    = {
+      configuration = {
         ProjectName = aws_codebuild_project.build_and_test.name
       }
     }
@@ -111,11 +111,11 @@ resource "aws_codepipeline" "meine_pipeline" {
   stage {
     name = "Approval"
     action {
-      name      = "ManualApproval"
-      category  = "Approval"
-      owner     = "AWS"
-      provider  = "Manual"
-      version   = "1"
+      name     = "ManualApproval"
+      category = "Approval"
+      owner    = "AWS"
+      provider = "Manual"
+      version  = "1"
     }
   }
 }
@@ -133,9 +133,20 @@ resource "aws_iam_policy" "codepipeline_codebuild_full_access" {
         Action = [
           "codebuild:*",
           "codepipeline:*",
-          "s3:*",
-          "logs:*",
         ],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Action = "s3:*",
+        Resource = [
+          "${aws_s3_bucket.codepipeline_bucket.arn}",
+          "${aws_s3_bucket.codepipeline_bucket.arn}/*"
+        ]
+      },
+      {
+        Effect   = "Allow",
+        Action   = "logs:*",
         Resource = "*"
       }
     ]
