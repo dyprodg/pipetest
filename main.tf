@@ -1,3 +1,5 @@
+
+
 resource "aws_s3_bucket" "codepipeline_bucket" {
   bucket = "mein-codepipeline-artefakt-bucket"
 }
@@ -86,9 +88,9 @@ resource "aws_codepipeline" "meine_pipeline" {
 
       configuration = {
         Owner      = "dyprodg"
-        Repo       = "mein-repo"
+        Repo       = "pipetest"
         Branch     = "main"
-        OAuthToken = "mein-github-token"
+        OAuthToken = var.GITHUB_TOKEN
       }
     }
   }

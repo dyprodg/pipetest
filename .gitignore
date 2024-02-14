@@ -13,6 +13,11 @@ override.tf.json
 *_override.tf
 *_override.tf.json
 .terraformrc
+secrets.tfvars
+.terraform.lock.hcl
+.terraform 
+.terraform.tfstate
+
 
 # Ignore all dot files
 .*
