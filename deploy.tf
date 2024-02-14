@@ -10,7 +10,7 @@ resource "aws_codedeploy_deployment_group" "example" {
 
   ec2_tag_filter {
     type  = "KEY_AND_VALUE"
-    key   = "Name"
+    key   = "value"
     value = "httpd-instance"
   }
 
@@ -49,11 +49,8 @@ resource "aws_iam_policy" "codedeploy_policy" {
     {
       "Effect": "Allow",
       "Action": [
-        "codedeploy:Get*",
-        "codedeploy:CreateDeployment",
-        "codedeploy:RegisterApplicationRevision",
-        "codedeploy:DeregisterOnPremisesInstance",
-        "codedeploy:RegisterOnPremisesInstance"
+        "codedeploy:*",
+        "ec2:*"
       ],
       "Resource": "*"
     },

@@ -151,6 +151,7 @@ resource "aws_iam_policy" "codepipeline_codebuild_full_access" {
           "codepipeline:*",
           "codestar-connections:UseConnection",
           "logs:*",
+          "codedeploy:*",
         ],
         Resource = "*"
       },
