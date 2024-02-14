@@ -38,7 +38,7 @@ resource "aws_iam_role" "codebuild_role" {
 
 resource "aws_codebuild_project" "build_and_test" {
   name          = "BuildTest"
-  description   = "Baut und testet die Flask/Django-Anwendung"
+  description   = "Baut und testet die Flask Anwendung"
   build_timeout = "5"
   service_role  = aws_iam_role.codebuild_role.arn
 
@@ -53,7 +53,7 @@ resource "aws_codebuild_project" "build_and_test" {
 
     environment_variable {
       name  = "PROJECT_NAME"
-      value = "MeinFlaskOderDjangoProjekt"
+      value = "Pipeline Python Flask"
     }
   }
 
@@ -64,7 +64,7 @@ resource "aws_codebuild_project" "build_and_test" {
 }
 
 resource "aws_codepipeline" "meine_pipeline" {
-  name     = "meine-app-pipeline"
+  name     = "FlaskPipeline"
   role_arn = aws_iam_role.codepipeline_role.arn
   pipeline_type = "V2"
 
