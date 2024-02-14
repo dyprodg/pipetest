@@ -58,17 +58,18 @@ resource "aws_iam_policy" "codedeploy_policy" {
       "Resource": "*"
     },
     {
-        Effect = "Allow",
-        Action = "s3:*",
-        Resource = [
+        "Effect": "Allow",
+        "Action": "s3:*",
+        "Resource": [
           "${aws_s3_bucket.codepipeline_bucket.arn}",
           "${aws_s3_bucket.codepipeline_bucket.arn}/*"
         ]
-      },
+    }
   ]
 }
 EOF
 }
+
 
 resource "aws_iam_role_policy_attachment" "codedeploy_attachment" {
   role       = aws_iam_role.codedeploy_service_role.name
